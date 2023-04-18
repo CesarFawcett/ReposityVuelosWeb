@@ -1,0 +1,2 @@
+Profe no pude agregar el token se me dificulto mucho, y verifique con H2 que como usted explico el semesre pasado
+es una base de datos relacional en memoria.de resto todo lo pedido en la guia esta funcionando al 100%.
