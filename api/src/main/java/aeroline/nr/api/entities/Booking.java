@@ -1,8 +1,10 @@
 package aeroline.nr.api.entities;
 
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,20 +27,23 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Enumerated(EnumType.STRING)
-    private BookingStatus status;
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "flightId")
-    private Flight outboundFlight;
-
-    private boolean checkedIn;
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "userId")
-    private User customerName;
-
-    private String createdAt;
-
+    @Column(name = "booking_reference", unique = true, nullable = false)
     private String bookingReference;
+
+    @Column(name = "passenger_name", nullable = false)
+    private String passengerName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flight_id", nullable = false)
+    private Flight flight;
+
+    @Column(nullable = false)
+    private String status = "PENDING";
+
+    @Column(name = "booking_date", nullable = false)
+    private LocalDateTime bookingDate;
 }
