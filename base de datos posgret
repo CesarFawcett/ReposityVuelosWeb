@@ -1,0 +1,62 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    fullname VARCHAR(255),
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Para PostgreSQL con bcrypt
+INSERT INTO users (fullname, username, password) VALUES
+('Juan Pérez', 'juanperez', '$2a$10$xyz123...'),
+('María García', 'mariagarcia', '$2a$10$abc456...'),
+('Carlos López', 'carloslopez', '$2a$10$def789...');
+
+CREATE TABLE flights (
+    id SERIAL PRIMARY KEY,
+    departure_date VARCHAR(255) NOT NULL,
+    departure_airport_code VARCHAR(10) NOT NULL,
+    departure_airport_name VARCHAR(100),
+    departure_city VARCHAR(50),
+    departure_locale VARCHAR(50),
+    arrival_date VARCHAR(255) NOT NULL,
+    arrival_airport_code VARCHAR(10) NOT NULL,
+    arrival_airport_name VARCHAR(100),
+    arrival_city VARCHAR(50),
+    arrival_locale VARCHAR(50),
+    ticket_price INT,
+    ticket_currency VARCHAR(3),
+    flight_number INT NOT NULL,
+    seat_capacity INT
+);
+
+INSERT INTO flights (
+    departure_date,
+    departure_airport_code,
+    departure_airport_name,
+    departure_city,
+    departure_locale,
+    arrival_date,
+    arrival_airport_code,
+    arrival_airport_name,
+    arrival_city,
+    arrival_locale,
+    ticket_price,
+    ticket_currency,
+    flight_number,
+    seat_capacity
+) VALUES (
+    '2024-01-15 08:00:00',
+    'MEX',
+    'Aeropuerto Internacional Benito Juárez',
+    'Ciudad de México',
+    'America/Mexico_City',
+    '2024-01-15 11:30:00',
+    'JFK',
+    'John F. Kennedy International Airport',
+    'New York',
+    'America/New_York',
+    4500,
+    'MXN',
+    1234,
+    180
+);

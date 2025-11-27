@@ -1,3 +1,0 @@
-Profe no pude agregar el token se me dificulto mucho, y verifique con H2 que como usted explico el semesre pasado
-es una base de datos relacional en memoria.de resto todo lo pedido en la guia esta funcionando al 100%.
-ademas docker no me deja abrir este computador es lento por ende no trabaje de comienzo con postgre y lo hiba a hacer despues de todo realizado pero no me dejo el pc.
