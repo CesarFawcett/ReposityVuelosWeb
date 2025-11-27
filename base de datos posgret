@@ -5,58 +5,54 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE flights (
+    id SERIAL PRIMARY KEY,
+    departure_date VARCHAR(255) NOT NULL,
+    departure_airport_code VARCHAR(255) NOT NULL,
+    departure_airport_name VARCHAR(255),
+    departure_city VARCHAR(255),
+    departure_locale VARCHAR(255),
+    arrival_date VARCHAR(255),
+    arrival_airport_code VARCHAR(255) NOT NULL,
+    arrival_airport_name VARCHAR(255),
+    arrival_city VARCHAR(255),
+    arrival_locale VARCHAR(255),
+    ticket_price INTEGER,
+    ticket_currency VARCHAR(255),
+    flight_number INTEGER,
+    seat_capacity INTEGER
+);
+
 -- Para PostgreSQL con bcrypt
 INSERT INTO users (fullname, username, password) VALUES
 ('Juan Pérez', 'juanperez', '$2a$10$xyz123...'),
 ('María García', 'mariagarcia', '$2a$10$abc456...'),
 ('Carlos López', 'carloslopez', '$2a$10$def789...');
 
-CREATE TABLE flights (
-    id SERIAL PRIMARY KEY,
-    departure_date VARCHAR(255) NOT NULL,
-    departure_airport_code VARCHAR(10) NOT NULL,
-    departure_airport_name VARCHAR(100),
-    departure_city VARCHAR(50),
-    departure_locale VARCHAR(50),
-    arrival_date VARCHAR(255) NOT NULL,
-    arrival_airport_code VARCHAR(10) NOT NULL,
-    arrival_airport_name VARCHAR(100),
-    arrival_city VARCHAR(50),
-    arrival_locale VARCHAR(50),
-    ticket_price INT,
-    ticket_currency VARCHAR(3),
-    flight_number INT NOT NULL,
-    seat_capacity INT
+-- Insertar vuelos de ejemplo
+INSERT INTO flights (
+    departure_date, departure_airport_code, departure_airport_name, 
+    departure_city, departure_locale, arrival_date, 
+    arrival_airport_code, arrival_airport_name, arrival_city, 
+    arrival_locale, ticket_price, ticket_currency, 
+    flight_number, seat_capacity
+) VALUES 
+(
+    '2024-01-15 08:00:00', 'MEX', 'Aeropuerto Internacional Benito Juárez',
+    'Ciudad de México', 'America/Mexico_City', '2024-01-15 11:30:00',
+    'JFK', 'John F. Kennedy International Airport', 'New York',
+    'America/New_York', 4500, 'MXN', 1234, 180
+),
+(
+    '2024-01-16 14:00:00', 'CDG', 'Charles de Gaulle Airport',
+    'Paris', 'Europe/Paris', '2024-01-16 16:30:00',
+    'LHR', 'Heathrow Airport', 'London',
+    'Europe/London', 12000, 'MXN', 5678, 220
+),
+(
+    '2024-01-17 10:00:00', 'BOG', 'Aeropuerto Internacional El Dorado',
+    'Bogotá', 'America/Bogota', '2024-01-17 13:15:00',
+    'LIM', 'Aeropuerto Internacional Jorge Chávez', 'Lima',
+    'America/Lima', 3200, 'MXN', 9012, 150
 );
 
-INSERT INTO flights (
-    departure_date,
-    departure_airport_code,
-    departure_airport_name,
-    departure_city,
-    departure_locale,
-    arrival_date,
-    arrival_airport_code,
-    arrival_airport_name,
-    arrival_city,
-    arrival_locale,
-    ticket_price,
-    ticket_currency,
-    flight_number,
-    seat_capacity
-) VALUES (
-    '2024-01-15 08:00:00',
-    'MEX',
-    'Aeropuerto Internacional Benito Juárez',
-    'Ciudad de México',
-    'America/Mexico_City',
-    '2024-01-15 11:30:00',
-    'JFK',
-    'John F. Kennedy International Airport',
-    'New York',
-    'America/New_York',
-    4500,
-    'MXN',
-    1234,
-    180
-);
