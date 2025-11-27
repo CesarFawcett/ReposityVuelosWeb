@@ -5,28 +5,19 @@ import aeroline.nr.api.entities.User;
 
 @Component
 public class UserMapper {
-    public UserCreateDto toUserCreateDto(User user){
-        UserCreateDto userCreateDto = new UserCreateDto();
-        userCreateDto.setId(user.getId());
-        userCreateDto.setFullname(user.getFullname());
-        userCreateDto.setUsername(user.getUsername());
-        userCreateDto.setPassword(user.getPassword());
-
-        return userCreateDto;
+    public UserDto toUserDto(User user) {
+        UserDto dto = new UserDto();
+        dto.setId(user.getId());
+        dto.setFullname(user.getFullname());
+        dto.setUsername(user.getUsername());
+        return dto;
     }
-    public User toUserEntity(UserCreateDto userCreateDto) {
+
+    public User toEntity(UserCreateDto dto) {
         User user = new User();
-        user.setFullname(userCreateDto.getFullname());
-        user.setUsername(userCreateDto.getUsername());
-        user.setPassword(userCreateDto.getPassword());
+        user.setFullname(dto.getFullname());
+        user.setUsername(dto.getUsername());
+        user.setPassword(dto.getPassword());
         return user;
     }
-    public UserDto toUserDto(User user){
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setFullname(user.getFullname());
-        userDto.setUsername(user.getUsername());
-        return userDto;
-    }
 }
-

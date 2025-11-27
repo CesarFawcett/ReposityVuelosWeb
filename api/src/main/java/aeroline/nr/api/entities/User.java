@@ -21,16 +21,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(nullable = false)
     private String fullname;
+
     @Column(nullable = false)
     private String username;
+
     @Column(nullable = false)
     private String password;
 
-    public User updateWith(User user){
+    public User updateWith(User user) {
         return new User(this.id,
-                        user.fullname,
-                        user.username,
-                        user.password);
+                user.fullname,
+                user.username,
+                user.password);
     }
 }
