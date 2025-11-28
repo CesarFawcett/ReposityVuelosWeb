@@ -4,10 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import aeroline.nr.api.api.Dto.BookingMapper;
 import aeroline.nr.api.entities.Booking;
 import aeroline.nr.api.entities.Flight;
 import aeroline.nr.api.entities.User;

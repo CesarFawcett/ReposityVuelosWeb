@@ -4,15 +4,16 @@ import java.util.List;
 
 import aeroline.nr.api.api.Dto.UserCreateDto;
 import aeroline.nr.api.api.Dto.UserDto;
+import aeroline.nr.api.api.Dto.UserUpdateDto;
 
 public interface UserService {
-    UserDto create(UserCreateDto dto);
-
     UserDto getById(int id);
 
     List<UserDto> getAll();
 
-    UserDto update(int id, UserCreateDto dto);
+    UserDto create(UserCreateDto dto);
+
+    UserDto update(int id, UserUpdateDto dto);
 
     void delete(int id);
 }

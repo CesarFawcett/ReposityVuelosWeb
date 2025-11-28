@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import aeroline.nr.api.api.Dto.UserCreateDto;
 import aeroline.nr.api.api.Dto.UserDto;
+import aeroline.nr.api.api.Dto.UserUpdateDto;
 import aeroline.nr.api.services.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,11 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     private final UserService service;
 
-    @PostMapping
-    public ResponseEntity<UserDto> create(@RequestBody UserCreateDto dto) {
-        return ResponseEntity.ok(service.create(dto));
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getById(@PathVariable int id) {
         return ResponseEntity.ok(service.getById(id));
@@ -39,15 +36,22 @@ public class UserController {
         return ResponseEntity.ok(service.getAll());
     }
 
+    @PostMapping
+    public ResponseEntity<UserDto> create(@RequestBody UserCreateDto dto) {
+        return ResponseEntity.ok(service.create(dto));
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@PathVariable int id,
-            @RequestBody UserCreateDto dto) {
+    public ResponseEntity<UserDto> update(
+            @PathVariable int id,
+            @RequestBody UserUpdateDto dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id) {
         service.delete(id);
-        return ResponseEntity.ok("User deleted");
+        return ResponseEntity.noContent().build();
     }
+
 }
