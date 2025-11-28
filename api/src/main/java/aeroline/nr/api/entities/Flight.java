@@ -48,4 +48,22 @@ public class Flight {
     private int flightNumber;
 
     private int seatCapacity;
+
+    public Flight updateWith(Flight flight) {
+        return new Flight(this.id,
+                flight.departureDate,
+                flight.departureAirportCode,
+                flight.departureAirportName,
+                flight.departureCity,
+                flight.departureLocale,
+                flight.arrivalDate,
+                flight.arrivalAirportCode,
+                flight.arrivalAirportName,
+                flight.arrivalCity,
+                flight.arrivalLocale,
+                flight.ticketPrice,
+                flight.ticketCurrency,
+                flight.flightNumber,
+                flight.seatCapacity);
+    }
 }

@@ -20,7 +20,7 @@ import aeroline.nr.api.api.Dto.FlightSearchDto;
 import aeroline.nr.api.services.FlightService;
 
 @RestController
-@RequestMapping("/catalog")
+@RequestMapping("/flights")
 @CrossOrigin(origins = "*")
 public class FlightController {
 

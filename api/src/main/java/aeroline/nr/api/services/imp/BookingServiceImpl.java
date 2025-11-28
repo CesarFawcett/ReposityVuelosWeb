@@ -4,57 +4,67 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import aeroline.nr.api.api.Dto.BookingMapper;
+import aeroline.nr.api.api.Dto.BookingRequestDto;
+import aeroline.nr.api.api.Dto.BookingResponseDto;
 import aeroline.nr.api.entities.Booking;
+import aeroline.nr.api.entities.BookingStatus;
 import aeroline.nr.api.entities.Flight;
 import aeroline.nr.api.entities.User;
 import aeroline.nr.api.repositories.BookingRepository;
 import aeroline.nr.api.repositories.FlightRepository;
 import aeroline.nr.api.repositories.UserRepository;
 import aeroline.nr.api.services.BookingService;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
-    @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
-    private FlightRepository flightRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final FlightRepository flightRepository;
+    private final UserRepository userRepository;
+    private final BookingMapper bookingMapper;
 
     @Override
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAllByOrderByBookingDateDesc();
+    public List<BookingResponseDto> getAllBookings() {
+        return bookingRepository.findAllByOrderByBookingDateDesc()
+                .stream()
+                .map(bookingMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Booking> getBookingsByUserId(int userId) {
-        return bookingRepository.findByUserId(userId);
+    public List<BookingResponseDto> getBookingsByUserId(int userId) {
+        return bookingRepository.findByUserId(userId)
+                .stream()
+                .map(bookingMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Booking> getBookingById(int id) {
-        return bookingRepository.findById(id);
+    public Optional<BookingResponseDto> getBookingById(int id) {
+        return bookingRepository.findById(id)
+                .map(bookingMapper::toDto);
     }
 
     @Override
-    public Optional<Booking> getBookingByReference(String bookingReference) {
-        return bookingRepository.findByBookingReference(bookingReference);
+    public Optional<BookingResponseDto> getBookingByReference(String bookingReference) {
+        return bookingRepository.findByBookingReference(bookingReference)
+                .map(bookingMapper::toDto);
     }
 
     @Override
-    public Booking createBooking(String passengerName, int userId, int flightId) {
+    public BookingResponseDto createBooking(BookingRequestDto requestDto) {
         // Verificar usuario
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        User user = userRepository.findById(requestDto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + requestDto.getUserId()));
 
         // Verificar vuelo
-        Flight flight = flightRepository.findById(flightId)
-                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + flightId));
+        Flight flight = flightRepository.findById(requestDto.getFlightId())
+                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + requestDto.getFlightId()));
 
         // Verificar disponibilidad
         if (flight.getSeatCapacity() <= 0) {
@@ -67,26 +77,35 @@ public class BookingServiceImpl implements BookingService {
         // Crear booking
         Booking booking = new Booking();
         booking.setBookingReference(bookingReference);
-        booking.setPassengerName(passengerName);
+        booking.setPassengerName(requestDto.getPassengerName());
         booking.setUser(user);
         booking.setFlight(flight);
-        booking.setStatus("CONFIRMED");
+        booking.setStatus(BookingStatus.CONFIRMED); // <- Usar enum
         booking.setBookingDate(LocalDateTime.now());
 
         // Actualizar capacidad del vuelo
         flight.setSeatCapacity(flight.getSeatCapacity() - 1);
         flightRepository.save(flight);
 
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+        return bookingMapper.toDto(savedBooking);
     }
 
     @Override
-    public Booking updateBookingStatus(int id, String status) {
+    public BookingResponseDto updateBookingStatus(int id, String status) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + id));
 
-        booking.setStatus(status);
-        return bookingRepository.save(booking);
+        // Validar status
+        try {
+            BookingStatus newStatus = BookingStatus.valueOf(status.toUpperCase());
+            booking.setStatus(newStatus);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid status: " + status);
+        }
+
+        Booking updatedBooking = bookingRepository.save(booking);
+        return bookingMapper.toDto(updatedBooking);
     }
 
     @Override
@@ -95,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + id));
 
         // Si la reserva estaba confirmada, liberar el asiento
-        if ("CONFIRMED".equals(booking.getStatus())) {
+        if (booking.getStatus() == BookingStatus.CONFIRMED) {
             Flight flight = booking.getFlight();
             flight.setSeatCapacity(flight.getSeatCapacity() + 1);
             flightRepository.save(flight);
@@ -109,7 +128,6 @@ public class BookingServiceImpl implements BookingService {
         do {
             reference = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         } while (bookingRepository.findByBookingReference(reference).isPresent());
-
         return reference;
     }
 }

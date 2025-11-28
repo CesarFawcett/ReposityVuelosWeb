@@ -2,48 +2,52 @@
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    fullname VARCHAR(200) NOT NULL,
-    username VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(200) NOT NULL
 );
 
 CREATE TABLE flights (
     id SERIAL PRIMARY KEY,
-    departure_date VARCHAR(50) NOT NULL,
-    departure_airport_code VARCHAR(10) NOT NULL,
-    departure_airport_name VARCHAR(100),
-    departure_city VARCHAR(100),
-    departure_locale VARCHAR(50),
-    arrival_date VARCHAR(50),
-    arrival_airport_code VARCHAR(10) NOT NULL,
-    arrival_airport_name VARCHAR(100),
-    arrival_city VARCHAR(100),
-    arrival_locale VARCHAR(50),
-    ticket_price INT,
-    ticket_currency VARCHAR(20),
-    flight_number INT,
-    seat_capacity INT
+    flight_number VARCHAR(20) NOT NULL,
+    origin VARCHAR(50) NOT NULL,
+    destination VARCHAR(50) NOT NULL,
+    departure_time TIMESTAMP NOT NULL,
+    arrival_time TIMESTAMP NOT NULL,
+    seat_capacity INT NOT NULL
 );
+
+CREATE TYPE booking_status AS ENUM ('CONFIRMED', 'CANCELLED', 'PENDING');
 
 CREATE TABLE bookings (
     id SERIAL PRIMARY KEY,
-    status VARCHAR(20),
-    flightId INT REFERENCES flights(id),
-    checkedIn BOOLEAN,
-    userId INT REFERENCES users(id),
-    createdAt VARCHAR(50),
-    bookingReference VARCHAR(50)
+    booking_reference VARCHAR(20) UNIQUE,
+    passenger_name VARCHAR(100) NOT NULL,
+    booking_date TIMESTAMP NOT NULL,
+    status booking_status NOT NULL,
+    flight_id INT NOT NULL,
+    user_id INT NOT NULL,
+
+    CONSTRAINT fk_user FOREIGN KEY (user_id)
+        REFERENCES users(id),
+    CONSTRAINT fk_flight FOREIGN KEY (flight_id)
+        REFERENCES flights(id)
 );
+
 
 
 peticiones 
 listar
+crear
 http://localhost:8080/users
 buscar id
+editar id
+eliminar id
 http://localhost:8080/users/1
 listar
-http://localhost:8080/catalog/
 crear
-http://localhost:8080/catalog/
+http://localhost:8080/flights/
 editar
-http://localhost:8080/catalog/1
+http://localhost:8080/flights/1
+buscar por filtro 
+http://localhost:8080/flights/search/?departureCity=Los ttttt&arrivalCity=New York

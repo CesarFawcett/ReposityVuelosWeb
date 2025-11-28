@@ -3,20 +3,21 @@ package aeroline.nr.api.services;
 import java.util.List;
 import java.util.Optional;
 
-import aeroline.nr.api.entities.Booking;
+import aeroline.nr.api.api.Dto.BookingRequestDto;
+import aeroline.nr.api.api.Dto.BookingResponseDto;
 
 public interface BookingService {
-    List<Booking> getAllBookings();
+    List<BookingResponseDto> getAllBookings();
 
-    List<Booking> getBookingsByUserId(int userId);
+    List<BookingResponseDto> getBookingsByUserId(int userId);
 
-    Optional<Booking> getBookingById(int id);
+    Optional<BookingResponseDto> getBookingById(int id);
 
-    Optional<Booking> getBookingByReference(String bookingReference);
+    Optional<BookingResponseDto> getBookingByReference(String bookingReference);
 
-    Booking createBooking(String passengerName, int userId, int flightId);
+    BookingResponseDto createBooking(BookingRequestDto requestDto); // <- Cambiar parámetro
 
-    Booking updateBookingStatus(int id, String status);
+    BookingResponseDto updateBookingStatus(int id, String status);
 
     void deleteBooking(int id);
 }

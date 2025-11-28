@@ -9,10 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import aeroline.nr.api.entities.Booking;
+
+import aeroline.nr.api.api.Dto.BookingMapper;
+import aeroline.nr.api.api.Dto.BookingRequestDto;
+import aeroline.nr.api.api.Dto.BookingResponseDto;
+import aeroline.nr.api.api.Dto.BookingStatusUpdateDto;
 import aeroline.nr.api.services.BookingService;
 
 @RestController
@@ -23,39 +27,39 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+    @Autowired
+    private BookingMapper bookingMapper;
+
     @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        List<Booking> bookings = bookingService.getAllBookings();
+    public ResponseEntity<List<BookingResponseDto>> getAllBookings() {
+        List<BookingResponseDto> bookings = bookingService.getAllBookings();
         return ResponseEntity.ok(bookings);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Booking>> getUserBookings(@PathVariable int userId) {
-        List<Booking> bookings = bookingService.getBookingsByUserId(userId);
+    public ResponseEntity<List<BookingResponseDto>> getUserBookings(@PathVariable int userId) {
+        List<BookingResponseDto> bookings = bookingService.getBookingsByUserId(userId);
         return ResponseEntity.ok(bookings);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable int id) {
+    public ResponseEntity<BookingResponseDto> getBookingById(@PathVariable int id) {
         return bookingService.getBookingById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/reference/{reference}")
-    public ResponseEntity<Booking> getBookingByReference(@PathVariable String reference) {
+    public ResponseEntity<BookingResponseDto> getBookingByReference(@PathVariable String reference) {
         return bookingService.getBookingByReference(reference)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<?> createBooking(
-            @RequestParam String passengerName,
-            @RequestParam int userId,
-            @RequestParam int flightId) {
+    public ResponseEntity<?> createBooking(@RequestBody BookingRequestDto requestDto) {
         try {
-            Booking booking = bookingService.createBooking(passengerName, userId, flightId);
+            BookingResponseDto booking = bookingService.createBooking(requestDto);
             return ResponseEntity.ok(booking);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -65,9 +69,9 @@ public class BookingController {
     @PutMapping("/{id}/status")
     public ResponseEntity<?> updateBookingStatus(
             @PathVariable int id,
-            @RequestParam String status) {
+            @RequestBody BookingStatusUpdateDto statusDto) {
         try {
-            Booking booking = bookingService.updateBookingStatus(id, status);
+            BookingResponseDto booking = bookingService.updateBookingStatus(id, statusDto.getStatus());
             return ResponseEntity.ok(booking);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

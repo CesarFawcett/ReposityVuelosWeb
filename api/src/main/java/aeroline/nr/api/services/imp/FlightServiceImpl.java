@@ -3,10 +3,7 @@ package aeroline.nr.api.services.imp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import aeroline.nr.api.api.Dto.FlightMapper;
 import aeroline.nr.api.api.Dto.FlightRequestDto;
 import aeroline.nr.api.api.Dto.FlightResponseDto;
@@ -14,17 +11,15 @@ import aeroline.nr.api.api.Dto.FlightSearchDto;
 import aeroline.nr.api.entities.Flight;
 import aeroline.nr.api.repositories.FlightRepository;
 import aeroline.nr.api.services.FlightService;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class FlightServiceImpl implements FlightService {
 
-    @Autowired
-    private FlightRepository flightRepository;
+    private final FlightRepository flightRepository;
+    private final FlightMapper flightMapper;
 
-    @Autowired
-    private FlightMapper flightMapper;
-
-    @Override
     public List<FlightResponseDto> getAllFlights() {
         return flightRepository.findAll()
                 .stream()
