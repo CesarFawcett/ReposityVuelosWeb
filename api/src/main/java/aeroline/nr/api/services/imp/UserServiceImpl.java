@@ -9,7 +9,6 @@ import aeroline.nr.api.api.Dto.UserMapper;
 import aeroline.nr.api.api.Dto.UserUpdateDto;
 import aeroline.nr.api.entities.User;
 import aeroline.nr.api.exceptions.UserNotFoundException;
-
 import org.springframework.stereotype.Service;
 import java.util.List;
 

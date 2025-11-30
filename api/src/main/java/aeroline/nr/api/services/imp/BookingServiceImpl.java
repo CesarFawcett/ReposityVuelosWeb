@@ -58,32 +58,27 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto createBooking(BookingRequestDto requestDto) {
-        // Verificar usuario
+
         User user = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + requestDto.getUserId()));
 
-        // Verificar vuelo
         Flight flight = flightRepository.findById(requestDto.getFlightId())
                 .orElseThrow(() -> new RuntimeException("Flight not found with id: " + requestDto.getFlightId()));
 
-        // Verificar disponibilidad
         if (flight.getSeatCapacity() <= 0) {
             throw new RuntimeException("No available seats on this flight");
         }
 
-        // Generar referencia única
         String bookingReference = generateUniqueBookingReference();
 
-        // Crear booking
         Booking booking = new Booking();
         booking.setBookingReference(bookingReference);
         booking.setPassengerName(requestDto.getPassengerName());
         booking.setUser(user);
         booking.setFlight(flight);
-        booking.setStatus(BookingStatus.CONFIRMED); // <- Usar enum
+        booking.setStatus(BookingStatus.CONFIRMED);
         booking.setBookingDate(LocalDateTime.now());
 
-        // Actualizar capacidad del vuelo
         flight.setSeatCapacity(flight.getSeatCapacity() - 1);
         flightRepository.save(flight);
 
@@ -96,7 +91,6 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + id));
 
-        // Validar status
         try {
             BookingStatus newStatus = BookingStatus.valueOf(status.toUpperCase());
             booking.setStatus(newStatus);
@@ -113,7 +107,6 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + id));
 
-        // Si la reserva estaba confirmada, liberar el asiento
         if (booking.getStatus() == BookingStatus.CONFIRMED) {
             Flight flight = booking.getFlight();
             flight.setSeatCapacity(flight.getSeatCapacity() + 1);

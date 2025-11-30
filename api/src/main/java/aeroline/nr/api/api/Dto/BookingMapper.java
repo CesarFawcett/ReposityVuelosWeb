@@ -1,5 +1,8 @@
 package aeroline.nr.api.api.Dto;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 import aeroline.nr.api.entities.Booking;
 import aeroline.nr.api.entities.BookingStatus;
@@ -17,13 +20,11 @@ public class BookingMapper {
         dto.setBookingReference(booking.getBookingReference());
         dto.setPassengerName(booking.getPassengerName());
 
-        // Verificar que user no sea null
         if (booking.getUser() != null) {
             dto.setUserId(booking.getUser().getId());
             dto.setUserFullName(booking.getUser().getFullname());
         }
 
-        // Verificar que flight no sea null
         if (booking.getFlight() != null) {
             dto.setFlightId(booking.getFlight().getId());
             dto.setFlightNumber(String.valueOf(booking.getFlight().getFlightNumber()));
@@ -35,14 +36,12 @@ public class BookingMapper {
             dto.setTicketCurrency(booking.getFlight().getTicketCurrency());
         }
 
-        // Convertir el enum BookingStatus a String para el DTO
-        dto.setStatus(booking.getStatus().name()); // <- CORRECCIÓN IMPORTANTE
+        dto.setStatus(booking.getStatus().name());
         dto.setBookingDate(booking.getBookingDate());
 
         return dto;
     }
 
-    // MÉTODO ADICIONAL RECOMENDADO: Para crear entidad desde DTO
     public Booking toEntity(BookingRequestDto dto) {
         if (dto == null) {
             return null;
@@ -50,21 +49,22 @@ public class BookingMapper {
 
         Booking booking = new Booking();
         booking.setPassengerName(dto.getPassengerName());
-        // NOTA: user y flight se deben establecer en el service mediante IDs
-        // booking.setUser() y booking.setFlight() se asignan en el service
-        booking.setStatus(BookingStatus.UNCONFIRMED); // Estado por defecto
-        booking.setBookingDate(java.time.LocalDateTime.now());
+        booking.setStatus(BookingStatus.UNCONFIRMED);
+        booking.setBookingDate(LocalDateTime.now());
+        booking.setBookingReference(generateTempReference());
 
         return booking;
     }
 
-    // MÉTODO ADICIONAL RECOMENDADO: Para actualizar entidad desde DTO
+    private String generateTempReference() {
+        return "TEMP-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+    }
+
     public void updateEntityFromDto(BookingRequestDto dto, Booking booking) {
         if (dto == null || booking == null) {
             return;
         }
 
         booking.setPassengerName(dto.getPassengerName());
-        // NOTA: user y flight normalmente no se actualizan en una reserva existente
     }
 }

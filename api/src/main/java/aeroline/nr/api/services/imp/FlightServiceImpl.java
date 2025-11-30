@@ -47,7 +47,6 @@ public class FlightServiceImpl implements FlightService {
             flights = flightRepository.findBySeatCapacityGreaterThan(0);
         }
 
-        // Filtrar por precio máximo si se especifica
         if (searchDto.getMaxPrice() != null) {
             flights = flights.stream()
                     .filter(flight -> flight.getTicketPrice() <= searchDto.getMaxPrice())
