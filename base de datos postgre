@@ -35,19 +35,35 @@ CREATE TABLE bookings (
 );
 
 
+FlightController
 
-peticiones 
-listar
-crear
-http://localhost:8080/users
-buscar id
-editar id
-eliminar id
-http://localhost:8080/users/1
-listar
-crear
-http://localhost:8080/flights/
-editar
-http://localhost:8080/flights/1
-buscar por filtro 
-http://localhost:8080/flights/search/?departureCity=Los ttttt&arrivalCity=New York
+Método	Endpoint	            Parámetros	                            Descripción
+GET	    /flights	            Ninguno	                                Obtener todos los vuelos
+GET	    /flights/available	    Ninguno	                                Obtener vuelos disponibles
+GET	    /flights/search	        departureCity, arrivalCity, maxPrice	Buscar vuelos con filtros
+GET	    /flights/{id}	        id (path)	                            Obtener vuelo por ID
+POST    /flights	            Body: FlightRequestDto               	Crear nuevo vuelo
+PUT	    /flights/{id}	        id (path), Body: FlightRequestDto	    Actualizar vuelo existente
+DELETE  /flights/{id}	        id (path)	                            Eliminar vuelo
+
+
+UserController 
+
+Método	 Endpoint	      Parámetros	                    Descripción
+GET	     /users/{id}	  id (path)	                        Obtener usuario por ID
+GET      /users	          Ninguno	                        Obtener todos los usuarios
+POST	 /users	          Body: UserCreateDto	            Crear nuevo usuario
+PUT	     /users/{id}	  id (path), Body: UserUpdateDto	Actualizar usuario existente
+DELETE	 /users/{id}	  id (path)	                        Eliminar usuario
+
+
+BookingController 
+
+Método	Endpoint	                      Parámetros	                            Descripción
+GET	    /bookings	                      Ninguno	                                Obtener todas las reservas
+GET	    /bookings/user/{userId}	          userId (path)	                            Obtener reservas por usuario
+GET	    /bookings/{id}	                  id (path)	                                Obtener reserva por ID
+GET	    /bookings/reference/{reference}	  reference (path)   	                    Obtener reserva por referencia
+POST	/bookings	                      Body: BookingRequestDto	                Crear nueva reserva
+PUT	    /bookings/{id}/status	          id (path), Body: BookingStatusUpdateDto	Actualizar estado de reserva
+DELETE	/bookings/{id}	                  id (path)	                                Eliminar reserva
